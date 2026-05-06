@@ -11,6 +11,7 @@ import { Popups, FakeDownload } from './components/Popups';
 import BouncingAlien from './components/BouncingAlien';
 import MemeBlast from './components/MemeBlast';
 import CaseModal from './components/CaseModal';
+import BSOD from './components/BSOD';
 
 function App() {
     const { initAudio, playType, playHover, playError, playClick, playExplosion } = useAudioChaos();
@@ -19,6 +20,7 @@ function App() {
     const [isPinkTheme, setIsPinkTheme] = useState(false);
     const [activeCase, setActiveCase] = useState(null);
     const [isMemeBlasted, setIsMemeBlasted] = useState(false);
+    const [isBSODActive, setIsBSODActive] = useState(false);
     
     const [tilt, setTilt] = useState(false);
     const [sparkles, setSparkles] = useState([]);
@@ -111,14 +113,19 @@ function App() {
         return () => clearInterval(interval);
     }, [isPinkTheme]);
 
-    // Meteor Timer when modal opens
+    // Random BSOD (Laptop getting defected)
     useEffect(() => {
-        if (!activeCase) return;
-        const timer = setTimeout(() => {
-            setIsMeteorActive(true);
-        }, 10000); // 10s until meteor strike
-        return () => clearTimeout(timer);
-    }, [activeCase]);
+        if (!hasEntered || isMemeBlasted || isBSODActive) return;
+        
+        const bsodTrigger = setInterval(() => {
+            if (Math.random() > 0.6) {
+                setIsBSODActive(true);
+                playError();
+            }
+        }, 30000); // Check every 30 seconds
+        
+        return () => clearInterval(bsodTrigger);
+    }, [hasEntered, isMemeBlasted, isBSODActive, playError]);
 
     // Broken Enter Logic
     const handleBrokenEnter = () => {
@@ -247,6 +254,8 @@ function App() {
             )}
 
             <MemeBlast active={isMemeBlasted} playExplosion={playExplosion} />
+            
+            <BSOD active={isBSODActive} onClose={() => setIsBSODActive(false)} />
 
         </div>
     );
