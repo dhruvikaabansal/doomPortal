@@ -113,19 +113,28 @@ function App() {
         return () => clearInterval(interval);
     }, [isPinkTheme]);
 
-    // Random BSOD (Laptop getting defected)
+    // BSOD Trigger Logic (Laptop getting defected)
     useEffect(() => {
-        if (!hasEntered || isMemeBlasted || isBSODActive) return;
+        if (!hasEntered || isMemeBlasted) return;
+
+        // Trigger BSOD reliably 8 seconds after entering the mainframe so they can see it
+        const initialBsod = setTimeout(() => {
+            setIsBSODActive(true);
+            playError();
+        }, 8000);
         
         const bsodTrigger = setInterval(() => {
-            if (Math.random() > 0.6) {
+            if (Math.random() > 0.4) {
                 setIsBSODActive(true);
                 playError();
             }
-        }, 30000); // Check every 30 seconds
+        }, 15000); // Check every 15 seconds
         
-        return () => clearInterval(bsodTrigger);
-    }, [hasEntered, isMemeBlasted, isBSODActive, playError]);
+        return () => {
+            clearTimeout(initialBsod);
+            clearInterval(bsodTrigger);
+        };
+    }, [hasEntered, isMemeBlasted, playError]);
 
     // Broken Enter Logic
     const handleBrokenEnter = () => {
