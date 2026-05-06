@@ -30,6 +30,17 @@ body, html {
     cursor: crosshair;
     user-select: none;
     transition: background-color 0.5s, color 0.5s;
+    animation: background-flicker 8s infinite;
+}
+
+@keyframes background-flicker {
+    0% { background-color: var(--bg); }
+    2% { background-color: #330000; }
+    4% { background-color: var(--bg); }
+    45% { background-color: var(--bg); }
+    46% { background-color: #110000; filter: invert(1); }
+    48% { background-color: var(--bg); filter: invert(0); }
+    100% { background-color: var(--bg); }
 }
 
 ::-webkit-scrollbar {
